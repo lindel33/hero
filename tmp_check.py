@@ -17,6 +17,7 @@ def send_check_message(message_id):
     :param message_id:
     :return: message_id_tmp, message_id
     """
+    print(message_id)
     message_id_tmp = bot.copy_message(chat_id=chat_id, from_chat_id=from_chat_id, message_id=message_id)
     message_id_tmp = message_id_tmp.__dict__['message_id']
     return message_id_tmp, message_id
@@ -42,7 +43,6 @@ def check_text(text):
 def check_message_key_word(message_id_tmp, message_id):
     history = requests.get(API_KEY + 'getUpdates').json()
     history = history['result']
-    # pprint(history)
     list_ready_id = read_ready_id()
     list_current_id = read_current_id()
     for post in history:
@@ -54,7 +54,6 @@ def check_message_key_word(message_id_tmp, message_id):
                 list_text = list(text.split('\n'))
                 list_text = [i for i in list_text if i != '']
                 for line in list_text:
-                    # print(line)
                     if 'Продано' in line:
                         if post_id in list_ready_id:
                             try:
@@ -73,12 +72,5 @@ def check_message_key_word(message_id_tmp, message_id):
                 return False, message_id_tmp, message_id
 
 
-# (337, 293) (339, 300) (343, 303)
-x = send_check_message(309)
-res = check_message_key_word(x[0], x[1])
 
-pprint(res)
-
-# res = check_message_key_word(339, 300)
-# pprint(res)
 

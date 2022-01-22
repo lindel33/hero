@@ -1,3 +1,4 @@
+from datetime import datetime
 from pprint import pprint
 import requests
 from settings import bot, chat_id, from_chat_id, API_KEY, token
@@ -8,14 +9,12 @@ history = history['result']
 
 
 def new_current_id(list_info):
-    try:
-        id_now = read_current_id()
-        for message in list_info:
-            if message[0] not in id_now:
-                id_now.append(message[0])
-        return id_now
-    except:
-        pass
+    id_now = read_current_id()
+
+    for message in list_info:
+        if message not in id_now:
+            id_now.append(message)
+    return id_now
 
 
 def get_all_id_messages_updates():
@@ -28,9 +27,14 @@ def get_all_id_messages_updates():
                 if 'caption' in post['channel_post']:
                     post_id = post['channel_post']['message_id']
                     if str(post_id) + '\n' not in id_list:
+                        date = post['channel_post']['date']
+                        messageTime = datetime.utcfromtimestamp(date)
+                        messageTime = messageTime.strftime('%Y-%m-%d %H:%M:%S')
+                        if post['channel_post']['message_id'] == 340:
+                            pprint(post)
                         list_info.append([post_id,
                                           {
-                                              'date': post['channel_post']['date'],
+                                              'date': messageTime,
                                               'media_group_id': post['channel_post']['media_group_id'],
                                           }])
 
@@ -38,5 +42,5 @@ def get_all_id_messages_updates():
     write_current_id(new_current_id(list_info))
     return id_list
 
-pprint(get_all_id_messages_updates())
+get_all_id_messages_updates()
 

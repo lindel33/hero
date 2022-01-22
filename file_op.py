@@ -5,16 +5,7 @@ name_current_file = 'text_files/current.txt'
 name_ready_file = 'text_files/ready_post.txt'
 
 
-def read_message_id(filename=name_data_file):
-    post_id_list = []
-    with open(filename) as json_file:
-        try:
-            data = json.load(json_file)
-            for id_message in data:
-                post_id_list.append(id_message[0])
-        except:
-            pass
-    return post_id_list
+
 
 
 def get_all_data(filename=name_data_file):
@@ -60,7 +51,6 @@ def read_current_id(filename=name_current_file):
 
 def write_current_id(data, filename=name_current_file):
     try:
-        print(1)
         with open(filename, 'w') as file_w:
             json.dump(data, file_w)
         return True
@@ -88,3 +78,20 @@ def write_ready_id(data, filename=name_ready_file):
     except:
         return False
 
+
+def read_message_id(filename=name_data_file):
+    post_id_list = []
+    with open(filename) as json_file:
+        try:
+            data = json.load(json_file)
+            current_id = read_current_id()
+            ready_id = read_ready_id()
+            for id_message in data:
+                if id_message[0] not in current_id[0]:
+                    if id_message[0] not in ready_id:
+                        post_id_list.append(id_message[0])
+        except:
+            pass
+    return post_id_list
+
+pprint(read_message_id())
