@@ -1,6 +1,5 @@
 from pprint import pprint
 import requests
-import self as self
 
 from file_op import read_message_id, remove_message_id, write_message_id, write_ready_id, read_ready_id, \
     read_current_id, write_current_id
