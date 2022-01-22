@@ -47,16 +47,20 @@ def remove_message_id(message_id, filename=name_data_file):
 
 
 def read_current_id(filename=name_current_file):
+    list_id = []
     try:
         with open(filename) as json_file:
             data = json.load(json_file)
-        return data
+            for ids in data:
+                list_id.append(ids)
+        return list_id
     except:
-        pass
+        return []
 
 
 def write_current_id(data, filename=name_current_file):
     try:
+        print(1)
         with open(filename, 'w') as file_w:
             json.dump(data, file_w)
         return True
@@ -65,9 +69,15 @@ def write_current_id(data, filename=name_current_file):
 
 
 def read_ready_id(filename=name_ready_file):
-    with open(filename) as json_file:
-        data = json.load(json_file)
-    return data
+    list_id = []
+    try:
+        with open(filename) as json_file:
+            data = json.load(json_file)
+            for ids in data:
+                list_id.append(ids)
+        return list_id
+    except:
+        return []
 
 
 def write_ready_id(data, filename=name_ready_file):
