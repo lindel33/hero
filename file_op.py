@@ -5,9 +5,6 @@ name_current_file = 'text_files/current.txt'
 name_ready_file = 'text_files/ready_post.txt'
 
 
-
-
-
 def get_all_data(filename=name_data_file):
     try:
         with open(filename) as json_file:
@@ -91,7 +88,6 @@ def read_message_id(filename=name_data_file):
                     if id_message[0] not in ready_id:
                         post_id_list.append(id_message[0])
         except:
-            pass
+            print('except')
     return post_id_list
 
-pprint(read_message_id())

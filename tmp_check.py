@@ -1,8 +1,11 @@
+
 from pprint import pprint
 import requests
 
 from file_op import read_message_id, remove_message_id, write_message_id, write_ready_id, read_ready_id, \
     read_current_id, write_current_id
+from re_send import get_message_to_send, re_send_message
+
 from settings import bot, chat_id, from_chat_id, API_KEY
 
 
@@ -17,10 +20,11 @@ def send_check_message(message_id):
     :param message_id:
     :return: message_id_tmp, message_id
     """
-    print(message_id)
-    message_id_tmp = bot.copy_message(chat_id=chat_id, from_chat_id=from_chat_id, message_id=message_id)
+    message_id_tmp = bot.forward_message(chat_id=chat_id, from_chat_id=from_chat_id, message_id=message_id)
+    text = message_id_tmp.caption
     message_id_tmp = message_id_tmp.__dict__['message_id']
-    return message_id_tmp, message_id
+
+    return message_id_tmp, message_id, text
 
 
 def check_key(post):
@@ -36,22 +40,18 @@ def check_key(post):
     return False
 
 
-def check_text(text):
-    pass
+def check_message_key_word(message_id_tmp, message_id, text_tmp):
 
-
-def check_message_key_word(message_id_tmp, message_id):
     history = requests.get(API_KEY + 'getUpdates').json()
     history = history['result']
+
     list_ready_id = read_ready_id()
     list_current_id = read_current_id()
     for post in history:
         post_id = check_key(post)
         if post_id:
             if post_id == message_id:
-
-                text = post['channel_post']['caption']
-                list_text = list(text.split('\n'))
+                list_text = list(text_tmp.split('\n'))
                 list_text = [i for i in list_text if i != '']
                 for line in list_text:
                     if 'Продано' in line:
@@ -66,9 +66,12 @@ def check_message_key_word(message_id_tmp, message_id):
                                 list_current_id.remove(post_id)
                             except:
                                 pass
+                        bot.delete_message(chat_id=from_chat_id, message_id=post_id)
+
                         write_current_id(data=list_current_id)
                         write_ready_id(data=list_ready_id)
                         return True, message_id_tmp, message_id
+                    re_send_message()
                 return False, message_id_tmp, message_id
 
 
